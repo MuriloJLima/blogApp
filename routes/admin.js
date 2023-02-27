@@ -3,6 +3,9 @@ const express = require("express")
 //método do express que permite a utilização de rotas em outro arquivo 
 const router = express.Router()
 
+//importando tabela
+const modelCat = require('../models/Categoria')
+
 //rota principal do admin
 router.get('/', (req, res)=>{
     res.render("admin/index")
@@ -21,6 +24,18 @@ router.get('/categorias', (req, res)=>{
 //rota para adicionar categoria
 router.get('/categorias/add', (req, res)=>{
     res.render("admin/addcategorias")
+})
+
+router.post('/categorias/nova', (req, res)=>{
+    //inserindo os dados passados no front para a tabela
+    modelCat.create({
+        nome: req.body.nome,
+        slug: req.body.slug
+    }).then(() =>{
+        console.log('categoria salva')
+    }).catch((erro) => {
+        res.send(`HOUVE UM ERRO: ${erro}`)
+    })
 })
 
 module.exports = router

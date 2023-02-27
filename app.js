@@ -7,11 +7,18 @@ const handlebars = require('express-handlebars')
 //importando rotas
 const routerAdmin = require('./routes/admin')
 
-//importando modulo path parautilização de arquivos estáticos
+//importando modulo path para utilização de arquivos estáticos
 const path = require('path')
+
+const session = require('express-session')
+
+const flash = require('connect-flash')
 
 //constante app que contém o metodo express
 const app = express()
+
+//config sessão
+app.use("session")
 
 //config express
 app.use(express.urlencoded({extended: true}))
