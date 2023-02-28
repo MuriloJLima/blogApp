@@ -10,15 +10,29 @@ const routerAdmin = require('./routes/admin')
 //importando modulo path para utilização de arquivos estáticos
 const path = require('path')
 
+//importando seção para retorno de mensagens de validação
 const session = require('express-session')
 
+//modulo para tornar mensagem do middlewar temporária
 const flash = require('connect-flash')
 
 //constante app que contém o metodo express
 const app = express()
 
 //config sessão
-app.use("session")
+app.use(session({
+    secret: "node",
+    resave: true,
+    saveUninitialized: true
+}))
+app.use(flash())
+
+//config middlewar
+app.use((req, res, next)=>{
+    res.locals.success_msg = req.flash("success_msg")
+    res.locals.error_msg = req.flash("error_msg")
+    next()
+})
 
 //config express
 app.use(express.urlencoded({extended: true}))

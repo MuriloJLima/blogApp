@@ -18,7 +18,9 @@ router.get('/posts', (req, res)=>{
 
 //rota para listar categorias
 router.get('/categorias', (req, res)=>{
-    res.render("admin/categorias")
+    modelCat.findAll({order:[['id', 'DESC']]}).then((categorias) =>{
+        res.render("admin/categorias", {categorias: categorias})
+    })
 })
 
 //rota para adicionar categoria
@@ -27,15 +29,35 @@ router.get('/categorias/add', (req, res)=>{
 })
 
 router.post('/categorias/nova', (req, res)=>{
-    //inserindo os dados passados no front para a tabela
-    modelCat.create({
-        nome: req.body.nome,
-        slug: req.body.slug
-    }).then(() =>{
-        console.log('categoria salva')
-    }).catch((erro) => {
-        res.send(`HOUVE UM ERRO: ${erro}`)
-    })
+
+    //validação das categorias
+    var erros = []
+
+    if(!req.body.nome || typeof req.body.nome == undefined || req.body.nome == null){
+        erros.push({texto: "nome inválido"})
+    }
+
+    if(!req.body.slug || typeof req.body.slug == undefined || req.body.slug == null){
+        erros.push({texto: "slug inválido"})
+    }
+
+    if(erros.length > 0){
+        res.render('admin/addcategorias', {erros: erros})
+    }
+    else{
+         //inserindo os dados passados no front para a tabela
+        modelCat.create({
+            nome: req.body.nome,
+            slug: req.body.slug
+        }).then(() =>{
+            req.flash("success_msg", "categoria criada com sucesso!")
+            res.redirect("/admin/categorias")
+        }).catch((erro) => {
+            req.flash("error_msg", "erro ao cadastrar categoria")
+            res.redirect("/admin")
+        })
+    }
+   
 })
 
 module.exports = router
