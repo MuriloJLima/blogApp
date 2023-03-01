@@ -60,4 +60,18 @@ router.post('/categorias/nova', (req, res)=>{
    
 })
 
+//rota para alterar categoria
+router.get('/categorias/edit/:id', (req, res)=>{
+
+    //variável que captura o id
+    var id = req.params.id
+
+    //listagem da categoria a ser editada, através de valores da tabela passados ao id
+    //que por sua vez, são convertidos em array para leitura no front
+    modelCat.findOne({atributes: ['nome', 'slug'], where:{id}}).then((categorias)=>{ 
+        res.render("admin/editCategoria", {categorias: categorias})
+    })
+    
+})
+
 module.exports = router
