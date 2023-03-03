@@ -60,16 +60,41 @@ router.post('/categorias/nova', (req, res)=>{
    
 })
 
-//rota para alterar categoria
+//rota para alterar categoria front
 router.get('/categorias/edit/:id', (req, res)=>{
 
     //variável que captura o id
-    var id = req.params.id
+    const id = req.params.id
 
     //listagem da categoria a ser editada, através de valores da tabela passados ao id
     //que por sua vez, são convertidos em array para leitura no front
     modelCat.findOne({atributes: ['nome', 'slug'], where:{id}}).then((categorias)=>{ 
         res.render("admin/editCategoria", {categorias: categorias})
+    }).catch((error)=>{
+        req.flash('error_msg', "essa categoria n existe")
+        res.redirect('/admin/categorias')
+    })
+    
+})
+
+//rota com função de alterar categoria
+router.post('/categorias/edit', (req, res)=>{
+
+    //variáveis que capturarão os valores a serem editados, juntamente com id
+    const id = req.body.id
+    const nome = req.body.nome
+    const slug = req.body.slug
+
+    //editando valores capturados nas variáveis através do id
+    modelCat.update(
+        {nome, slug},
+        {where:{id}}
+    ).then(()=>{
+        req.flash("success_msg", "categoria alterada com sucesso!")
+        res.redirect("/admin/categorias")
+    }).catch((error)=>{
+        req.flash('error_msg', "essa categoria n existe")
+        res.redirect('/admin/categorias')
     })
     
 })
