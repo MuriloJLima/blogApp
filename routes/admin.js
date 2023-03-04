@@ -121,11 +121,15 @@ router.post("/categorias/deletar", (req, res)=>{
 
 //rota de listagem de postagem
 router.get('/postagens', (req, res)=>{
-    res.render('admin/postagens')
+
+    modelPos.findAll({order:[['id', 'DESC']]}).then((postagens) =>{
+        res.render("admin/postagens", {postagens: postagens})
+    })
 })
 
 //rota que carrega o formulário para adicionar postagem
 router.get('/postagens/add', (req, res)=>{
+    
     modelCat.findAll().then((categorias) =>{
         res.render("admin/addPostagem", {categorias: categorias})
     })
@@ -142,7 +146,7 @@ router.post('/postagens/nova', (req, res)=>{
     }
 
     if(erros.length > 0){
-        res.render('/admin/addPostagem', {erros: erros})
+        res.render('admin/addPostagem', {erros: erros})
     }
     else{
         //adicionando valores com base nos campos do front
