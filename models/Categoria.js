@@ -4,7 +4,7 @@ const Sequelize = require('sequelize')
 const connection = require('../database/database')
 
 //criando tabela
-const modelCat = connection.define('postagens', {
+const modelCat = connection.define('categorias', {
     nome:{
         type: Sequelize.STRING,
         allowNull: false

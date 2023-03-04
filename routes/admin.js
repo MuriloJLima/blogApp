@@ -3,8 +3,11 @@ const express = require("express")
 //método do express que permite a utilização de rotas em outro arquivo 
 const router = express.Router()
 
-//importando tabela
+//importando tabela de categorias
 const modelCat = require('../models/Categoria')
+
+//importando tabelas de post
+const modelPos = require('../models/Postagem')
 
 //rota principal do admin
 router.get('/', (req, res)=>{
@@ -98,5 +101,66 @@ router.post('/categorias/edit', (req, res)=>{
     })
     
 })
+
+//rota com função de deletar categoria
+router.post("/categorias/deletar", (req, res)=>{
+
+    const id = req.body.id
+
+    modelCat.destroy({where:{id}}).then(()=>{
+        req.flash("success_msg", "categoria deletada")
+        res.redirect('/admin/categorias')
+    }).catch((error)=>{
+        req.flash("error_msg", "erro ao deletar categoria")
+        res.redirect("/admin/categorias")
+    })
+})
+
+
+// rotas de postagens
+
+//rota de listagem de postagem
+router.get('/postagens', (req, res)=>{
+    res.render('admin/postagens')
+})
+
+//rota que carrega o formulário para adicionar postagem
+router.get('/postagens/add', (req, res)=>{
+    modelCat.findAll().then((categorias) =>{
+        res.render("admin/addPostagem", {categorias: categorias})
+    })
+})
+
+//rota com a função de adicionar postagem
+router.post('/postagens/nova', (req, res)=>{
+
+    //validação
+    var erros = []
+
+    if(req.body.categoria == 0){
+        erros.push({texto: 'Categoria inváida'})
+    }
+
+    if(erros.length > 0){
+        res.render('/admin/addPostagem', {erros: erros})
+    }
+    else{
+        //adicionando valores com base nos campos do front
+        modelPos.create({
+            titulo: req.body.titulo,
+            slug: req.body.slug,
+            descricao: req.body.descricao,
+            conteudo: req.body.conteudo,
+            idCat: req.body.categoria
+        }).then(() =>{
+            req.flash("success_msg", "postagem criada com sucesso!")
+            res.redirect("/admin/postagens")
+        }).catch((error) => {
+            req.flash("error_msg", "erro ao cadastrar postagem")
+            res.redirect("/admin/postagens")
+        })
+    }
+})
+
 
 module.exports = router
