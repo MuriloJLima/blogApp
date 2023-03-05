@@ -102,7 +102,7 @@ router.post('/categorias/edit', (req, res)=>{
     
 })
 
-//rota com função de deletar categoria
+//rota com função de deletar categoria com base no id passado no corpo
 router.post("/categorias/deletar", (req, res)=>{
 
     const id = req.body.id
@@ -124,6 +124,14 @@ router.get('/postagens', (req, res)=>{
 
     modelPos.findAll({order:[['id', 'DESC']]}).then((postagens) =>{
         res.render("admin/postagens", {postagens: postagens})
+
+        // var id = req.body.id
+        // console.log(id)
+
+        // modelCat.findAll({atributes: ['nome'], where:{id}}).then((categorias)=>{ 
+        //     res.render("admin/postagens", {categorias: categorias})
+        // })
+        
     })
 })
 
@@ -164,6 +172,63 @@ router.post('/postagens/nova', (req, res)=>{
             res.redirect("/admin/postagens")
         })
     }
+})
+
+//rota que carrega os valores das postagens a serem editadas
+router.get('/postagens/edit/:id', (req, res)=>{
+
+    //variável que captura o id
+    const id = req.params.id
+
+    //listagem da categoria a ser editada, através de valores da tabela passados ao id
+    //que por sua vez, são convertidos em array para leitura no front
+    modelPos.findOne({atributes: [
+        'titulo', 'slug', 'descricao', 'conteudo', 'idCat'], where:{id}}).then((postagens)=>{ 
+        // res.render("admin/editPostagem", {postagens: postagens})
+        modelCat.findAll().then((categorias)=>{
+            res.render("admin/editPostagem", {postagens: postagens, categorias: categorias})
+        })
+
+
+    }).catch((error)=>{
+        req.flash('error_msg', "essa postagem n existe")
+        res.redirect('/admin/postagens')
+    })
+    
+})
+
+//rota com a função de editar postagem
+router.post("/postagem/edit", (req, res)=>{
+    //variáveis que capturarão os valores a serem editados, juntamente com id
+    const id = req.body.id
+    const titulo = req.body.titulo
+    const slug = req.body.slug
+    const descricao = req.body.descricao
+    const conteudo = req.body.conteudo
+    const idCat = req.body.categoria
+
+    //editando valores capturados nas variáveis através do id
+    modelPos.update(
+        {titulo, slug, descricao, conteudo, idCat},
+        {where:{id}}
+    ).then(()=>{
+        req.flash("success_msg", "postagem alterada com sucesso!")
+        res.redirect("/admin/postagens")
+    }).catch((error)=>{
+        req.flash('error_msg', "essa postagem n existe")
+        res.redirect('/admin/postagens')
+    })
+})
+
+//rota com função de deletar post com base no id passado como parâmetro
+router.get('/postagem/deletar/:id', (req, res)=>{
+
+    const id = req.params.id
+    
+    modelPos.destroy({where: {id}}).then(()=>{
+        req.flash('success_msg', "postagem deletada com sucesso")
+        res.redirect("/admin/postagens")
+    })
 })
 
 

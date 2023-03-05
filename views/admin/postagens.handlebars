@@ -7,9 +7,14 @@
 {{#each postagens}}
     <div class="card mt-4">
         <div class="card-body">
+            {{!-- <input type="" name="id" value="{{idCat}}"> --}}
             <h4>{{titulo}}</h4>
             <p>Descrição: {{descricao}}</p>
+            {{!-- {{#each ../categorias}} --}}
             <p>Categoria: {{idCat}}</p>
+            {{!-- {{/each}} --}}
+            <a href="/admin/postagens/edit/{{id}}"><button class="btn btn-success mt-3">Editar postagem</button></a>
+            <a href="/admin/postagem/deletar/{{id}}"><button class="btn btn-danger mt-3">Deletar postagem</button></a>
         </div>
     </div>
 {{else}}
