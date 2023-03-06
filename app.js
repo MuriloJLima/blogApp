@@ -6,6 +6,7 @@ const handlebars = require('express-handlebars')
 
 //importando rotas
 const routerAdmin = require('./routes/admin')
+const routerUsuario = require('./routes/usuario')
 
 //importando modulo path para utilização de arquivos estáticos
 const path = require('path')
@@ -98,6 +99,9 @@ app.get('/categorias/:slug', (req, res)=>{
 
 //rotas admin
 app.use('/admin', routerAdmin)
+
+//rotas usuario
+app.use('/usuario', routerUsuario)
 
 //porta
 app.listen(3000, ()=>{
