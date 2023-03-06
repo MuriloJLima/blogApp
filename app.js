@@ -16,6 +16,8 @@ const session = require('express-session')
 //modulo para tornar mensagem do middlewar temporária
 const flash = require('connect-flash')
 
+const modelPos = require('./models/Postagem')
+
 //constante app que contém o metodo express
 const app = express()
 
@@ -44,6 +46,34 @@ app.set('view engine', 'handlebars')
 
 //config public 
 app.use(express.static(path.join(__dirname, 'public')))
+
+//rota home
+app.get('/', (req, res)=>{
+    modelPos.findAll().then((postagens)=>{
+        res.render('index', {postagens: postagens})
+    })
+})
+
+//rota que lista postagem selecionada na home através do parametro slug
+app.get('/postagem/:slug', (req, res)=>{
+
+    const slug = req.params.slug
+
+    modelPos.findOne({where: {slug}}).then((postagem)=>{
+        if(postagem){
+            // const post = {
+            //     titulo: postagem.titulo,
+            //     data: postagem.data,
+            //     conteudo: postagem.conteudo
+            // }
+            res.render('postagem/index', {postagem: postagem})
+        }
+        else{
+            req.flash("error_msg", 'esta postagem não existe')
+            res.redirect('/')
+        }
+    })
+})
 
 //rotas
 app.use('/admin', routerAdmin)
