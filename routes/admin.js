@@ -124,14 +124,36 @@ router.get('/postagens', (req, res)=>{
 
     modelPos.findAll({order:[['id', 'DESC']]}).then((postagens) =>{
         res.render("admin/postagens", {postagens: postagens})
+        
+        // const id ={
+        //     id: postagens.idCat
+        // }
 
         // var id = req.body.id
         // console.log(id)
 
         // modelCat.findAll({atributes: ['nome'], where:{id}}).then((categorias)=>{ 
-        //     res.render("admin/postagens", {categorias: categorias})
+        //     res.render("admin/postagens", {categorias: categorias, postagens: postagens})
         // })
-        
+
+        // if(postagens){
+        //     const id = {
+        //         id: postagens.id
+        //     }
+
+        //     modelCat.findAll({atributes: ['nome'], where:{id}}).then((categorias)=>{ 
+                
+        //         if(categorias){
+        //             const params = {
+        //                 titulo: postagens.titulo,
+        //                 descricao: postagens.descricao,
+        //                 nome: categorias.nome
+        //             }
+        //             res.render("admin/postagens", params)
+        //         }
+        //     })
+        // }
+
     })
 })
 

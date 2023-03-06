@@ -17,6 +17,7 @@ const session = require('express-session')
 const flash = require('connect-flash')
 
 const modelPos = require('./models/Postagem')
+const modelCat = require('./models/Categoria')
 
 //constante app que contém o metodo express
 const app = express()
@@ -75,7 +76,27 @@ app.get('/postagem/:slug', (req, res)=>{
     })
 })
 
-//rotas
+//rota para listar categorias para o cliente
+app.get('/categorias', (req, res)=>{
+    modelCat.findAll().then((categorias)=>{
+        res.render('categorias/index', {categorias: categorias})
+    })
+})
+
+//rota para listar postagens refetende a uma categoria
+app.get('/categorias/:slug', (req, res)=>{
+    const slug = req.params.slug
+
+    modelCat.findOne({where: {slug}}).then((categoria)=>{
+        if(categoria){
+            modelPos.findAll({categoria: categoria.id}).then((postagens)=>{
+                res.render('categorias/postagens', {postagens: postagens, categoria: categoria})
+            })
+        }
+    })
+})
+
+//rotas admin
 app.use('/admin', routerAdmin)
 
 //porta
