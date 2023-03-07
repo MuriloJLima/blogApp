@@ -13,8 +13,8 @@ const modelUs = connection.define('usuarios', {
         allowNull: false
     },
     eAdmin:{
-        type: Sequelize.STRING,
-        allowNull: false
+        type: Sequelize.INTEGER,
+        defaultValue: 0,
     },
     senha:{
         type: Sequelize.STRING,
@@ -22,6 +22,6 @@ const modelUs = connection.define('usuarios', {
     }
 })
 
-//modelUs.sync({force: true})
+modelUs.sync({force: true})
 
 module.exports = modelUs
