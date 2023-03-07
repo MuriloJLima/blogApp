@@ -3,7 +3,11 @@ const router = express.Router()
 
 const modelUs = require('../models/Usuario')
 
+//importação do bcrypt para criptografar senha
 const bcrypt = require('bcryptjs')
+
+//importação do passport para validação de usuario
+const passport = require('passport')
 
 // rota que renderiza formulario de cadastro de usuario
 router.get('/registro', (req, res)=>{
@@ -61,6 +65,21 @@ router.post('/registro', (req, res)=>{
         })
     }
 
+})
+
+//rota que exibe formulario de login
+router.get('/login', (req, res)=>{
+    res.render("usuarios/login")
+})
+
+//rota com função de login, onde se é passado o tipo de altenticação (local), 
+//juntamente com ações a serem feitas após altenticação
+router.post('/login', (req, res, next)=>{
+    passport.authenticate("local", {
+        successRedirect: "/",
+        failureRedirect: '/usuario/login',
+        failureFlash: true
+    })(req, res, next)
 })
 
 module.exports = router

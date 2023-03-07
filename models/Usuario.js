@@ -22,6 +22,6 @@ const modelUs = connection.define('usuarios', {
     }
 })
 
-modelUs.sync({force: true})
+//modelUs.sync({force: true})
 
 module.exports = modelUs

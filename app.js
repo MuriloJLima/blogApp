@@ -17,8 +17,16 @@ const session = require('express-session')
 //modulo para tornar mensagem do middlewar temporária
 const flash = require('connect-flash')
 
+//importando passport para configurar sua seção
+const passport = require('passport')
+
+//imporando a função passport que valida o usuario
+require('./config/auth')(passport)
+
+//importação de models para serem urilizadas nas rotas
 const modelPos = require('./models/Postagem')
 const modelCat = require('./models/Categoria')
+
 
 //constante app que contém o metodo express
 const app = express()
@@ -29,12 +37,17 @@ app.use(session({
     resave: true,
     saveUninitialized: true
 }))
+//config sessão (passport)
+app.use(passport.initialize())
+app.use(passport.session())
+//config flash
 app.use(flash())
 
-//config middlewar
+//config middlewar, criando variaveis globais a serem exibidas em detrminadas condições
 app.use((req, res, next)=>{
     res.locals.success_msg = req.flash("success_msg")
     res.locals.error_msg = req.flash("error_msg")
+    res.locals.error = req.flash("error")
     next()
 })
 
@@ -48,6 +61,9 @@ app.set('view engine', 'handlebars')
 
 //config public 
 app.use(express.static(path.join(__dirname, 'public')))
+
+
+//ROTAS A PARTIR DA RAÍZ - INÍCIO
 
 //rota home
 app.get('/', (req, res)=>{
@@ -96,6 +112,8 @@ app.get('/categorias/:slug', (req, res)=>{
         }
     })
 })
+
+//FIM DAS ROTAS A PARTIR DA RAÍZ
 
 //rotas admin
 app.use('/admin', routerAdmin)
