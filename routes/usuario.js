@@ -56,7 +56,8 @@ router.post('/registro', (req, res)=>{
                 modelUs.create({
                     nome: req.body.nome,
                     email: req.body.email,
-                    senha: hash
+                    senha: hash,
+                    //eAdmin: 1
                 }).then(()=>{
                     req.flash("success_msg", 'usuario registrado')
                     res.redirect('/')

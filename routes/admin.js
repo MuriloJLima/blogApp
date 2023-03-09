@@ -9,29 +9,32 @@ const modelCat = require('../models/Categoria')
 //importando tabelas de post
 const modelPos = require('../models/Postagem')
 
+//importando middleware para controle de acesso, onde será declarado como parametro nas rotas
+const {eAdmin} = require('../helpers/eAdmin')
+
 //rota principal do admin
-router.get('/', (req, res)=>{
+router.get('/', eAdmin, (req, res)=>{
     res.render("admin/index")
 })
 
 //rota para listar posts
-router.get('/posts', (req, res)=>{
+router.get('/posts', eAdmin, (req, res)=>{
     res.send('página de posts')
 })
 
 //rota para listar categorias
-router.get('/categorias', (req, res)=>{
+router.get('/categorias', eAdmin, (req, res)=>{
     modelCat.findAll({order:[['id', 'DESC']]}).then((categorias) =>{
         res.render("admin/categorias", {categorias: categorias})
     })
 })
 
 //rota para adicionar categoria
-router.get('/categorias/add', (req, res)=>{
+router.get('/categorias/add', eAdmin, (req, res)=>{
     res.render("admin/addcategorias")
 })
 
-router.post('/categorias/nova', (req, res)=>{
+router.post('/categorias/nova', eAdmin, (req, res)=>{
 
     //validação das categorias
     var erros = []
@@ -64,7 +67,7 @@ router.post('/categorias/nova', (req, res)=>{
 })
 
 //rota para alterar categoria front
-router.get('/categorias/edit/:id', (req, res)=>{
+router.get('/categorias/edit/:id', eAdmin, (req, res)=>{
 
     //variável que captura o id
     const id = req.params.id
@@ -81,7 +84,7 @@ router.get('/categorias/edit/:id', (req, res)=>{
 })
 
 //rota com função de alterar categoria
-router.post('/categorias/edit', (req, res)=>{
+router.post('/categorias/edit', eAdmin, (req, res)=>{
 
     //variáveis que capturarão os valores a serem editados, juntamente com id
     const id = req.body.id
@@ -103,7 +106,7 @@ router.post('/categorias/edit', (req, res)=>{
 })
 
 //rota com função de deletar categoria com base no id passado no corpo
-router.post("/categorias/deletar", (req, res)=>{
+router.post("/categorias/deletar", eAdmin, (req, res)=>{
 
     const id = req.body.id
 
@@ -120,7 +123,7 @@ router.post("/categorias/deletar", (req, res)=>{
 // rotas de postagens
 
 //rota de listagem de postagem
-router.get('/postagens', (req, res)=>{
+router.get('/postagens', eAdmin, (req, res)=>{
 
     modelPos.findAll({order:[['id', 'DESC']]}).then((postagens) =>{
         res.render("admin/postagens", {postagens: postagens})
@@ -158,7 +161,7 @@ router.get('/postagens', (req, res)=>{
 })
 
 //rota que carrega o formulário para adicionar postagem
-router.get('/postagens/add', (req, res)=>{
+router.get('/postagens/add', eAdmin, (req, res)=>{
     
     modelCat.findAll().then((categorias) =>{
         res.render("admin/addPostagem", {categorias: categorias})
@@ -166,7 +169,7 @@ router.get('/postagens/add', (req, res)=>{
 })
 
 //rota com a função de adicionar postagem
-router.post('/postagens/nova', (req, res)=>{
+router.post('/postagens/nova', eAdmin, (req, res)=>{
 
     //validação
     var erros = []
@@ -197,7 +200,7 @@ router.post('/postagens/nova', (req, res)=>{
 })
 
 //rota que carrega os valores das postagens a serem editadas
-router.get('/postagens/edit/:id', (req, res)=>{
+router.get('/postagens/edit/:id', eAdmin, (req, res)=>{
 
     //variável que captura o id
     const id = req.params.id
@@ -220,7 +223,7 @@ router.get('/postagens/edit/:id', (req, res)=>{
 })
 
 //rota com a função de editar postagem
-router.post("/postagem/edit", (req, res)=>{
+router.post("/postagem/edit", eAdmin, (req, res)=>{
     //variáveis que capturarão os valores a serem editados, juntamente com id
     const id = req.body.id
     const titulo = req.body.titulo
@@ -243,7 +246,7 @@ router.post("/postagem/edit", (req, res)=>{
 })
 
 //rota com função de deletar post com base no id passado como parâmetro
-router.get('/postagem/deletar/:id', (req, res)=>{
+router.get('/postagem/deletar/:id', eAdmin, (req, res)=>{
 
     const id = req.params.id
     
